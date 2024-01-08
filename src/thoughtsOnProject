@@ -1,0 +1,79 @@
+Question to be answered
+
+Scenario: IT support administrator specialist tasked with creating email accounts for new hires
+
+Application should do the following
+
+-generate email
+-determine the department of the user
+-generate a random string as password
+-set methods to change password, mailbox capacity and define alternate email address
+-have get methods to display the name, email and mailbox capacity
+
+Notes
+
+scanner.nextLine() should not be followed by a scanner.nextLine() with the aim of cancelling out the character
+but .nextInt() should be followed by .nextLine() to cancel out the character
+
+Generating a Password
+
+First create a list of the String that we want the password to be generated from
+
+Secondly, create a StringBuilder class cause it allows us to create a sequence of characters that are mutable
+
+Then iterate over the String created while using the math.random function to generate random indexes that will be used to
+string that we want. Finally for every iteration, append to the String builder object the character of the String with the index generated
+from the random method
+
+note (int) is used for casting primitive data types, this allows for Truncation meaning:-
+meaning (int) 9/5 will not return a float but an integer.
+
+
+Allowing the user to create a new Password
+To check if the password set contains some set of character we will use the pattern and matcher class
+We will create a pattern object passing a range of characters in this way:-
+[a-zA-Z] note that it must be in square brackets. this means the pattern is from A-Z and a-z.
+it already takes into consideration the special characters
+[0-9] must contain a number --- This is known as Regular Expressions.
+[input the special characters you want it to contain] will contain a special character
+
+create all your commands inside the new password method in the class (done)
+make sure after setting the new password the user does not have access to the old password set by the system again (done)
+Try and create a console to allow it input the password while masking the password created (not done (might need to create a gui for this))
+Ask user to reconfirm password (done)
+You can create a system that allows to register multiple users on one instance of opening the console ( done) Iam cancelling this cause the user of the app should be able to only register one user at a time
+
+create the app to be able to respond to users input intuitively, they should be able to cancel continuing the result at any point in time
+and close the app as a result, as of now it is still not
+
+Revamping the whole application  (My first major portfolio) ( will incorporate all things, front-end, back-end, will upload to the cloud using aws)
+Features
+1. Registration of new hires
+2. Send welcome emails to new hires
+3. HR can use it to query information about the company staff (you must give a level of authority to  the users to access this)
+4. Be able to create a username and password to log into the web-app
+
+
+Information about user
+-----------------------
+1. Names
+2. DOB
+3. Employment start date
+4. Gender
+5. Religion
+6. Address
+7. Employer address and name
+8. Phone number and email address
+
+
+
+
+
+
+
+
+
+
+
+
+
