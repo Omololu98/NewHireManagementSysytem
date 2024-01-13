@@ -23,9 +23,9 @@ public class newHire {
     final public String companyName = "sznBank";
     final public int companyCode = 34;
     private int departmentCode;
-    private String password;
+    private byte[] password;
 
-    private byte[] salt, hashedPassword; // salt of every user (for their password)
+    private byte[] salt; // salt of every user (for their password)
 
     //endregion
 
@@ -41,7 +41,7 @@ public class newHire {
     //this constructor will be used to set a new password once you get your default password
     public newHire(String email){
         this.salt = newHire.generateSalt();
-        this.hashedPassword = newHire.setNewPassWord();
+        this.password= newHire.setNewPassWord();
     }
     public void setId(){
         StringBuilder s = new StringBuilder(6); // capacity is maximum number of characters in ID
@@ -98,21 +98,21 @@ public class newHire {
         return this.email;
     }
 
-    public static byte[] setNewPassWord() {
-        while (true) {
+    private static byte[] setNewPassWord() {
+        while(true) {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Password must be minimum of 12 characters including " +
                     "Uppercase,lowercase, numbers and either of %@#$*&!\n");
             System.out.println("Input your new Password");
-            String newPassword = scanner.nextLine();
+            String newPassword = scanner.nextLine().trim();
             System.out.println("Re-enter your Password"); // to re-enter the password provided
-            String newPassword1 = scanner.nextLine();
+            String newPassword1 = scanner.nextLine().trim(); //trim allows the app to ignore white-spaces before and after the inputed word in scanner
             //this rectifies if the password provided matches, authentication of password twice is needed.
             if (newPassword.equals(newPassword1)) {
 
                 if (newHire.verifyPassword(newPassword)) {
-//                    this.password = newPassword;
                     ArgonResult argonResult =newHire.encyptedPassword(newPassword);
+                    System.out.println("Password has been successfully changed");
                     return argonResult.getHash();
                 }else{
                     System.out.println("Password conditions not met");
@@ -121,6 +121,9 @@ public class newHire {
                 System.out.println("Password does not match");
             }
         }
+    }
+    public byte[] getPassword(){
+        return this.password;
     }
 
         //endregion

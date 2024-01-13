@@ -1,12 +1,17 @@
 package com.iyanuoluwa.iyanuoluwa.newHire.Repository;
 
+import com.iyanuoluwa.iyanuoluwa.newHire.Controller.newHireServices;
 import com.iyanuoluwa.iyanuoluwa.newHire.Models.newHire;
 
+import java.sql.SQLException;
+
 public interface newHireDAO {
-    public void createNewHire(newHire newHire);
+    public void createInfoNewHire(newHire newHire, newHireServices newHireServices);
 
-    public void updateNewHire(newHire newHire);
+    public void updateInfoNewHire(newHire newHire, newHireServices newHireServices) throws SQLException;
 
-    newHire findNewhire(String id);
+    public void getInfoNewHire(newHire newHire,newHireServices newHireServices ) throws SQLException;
+
+    public void deleteInfoNewHire(newHire newHire,newHireServices newHireServices) throws SQLException;
 
 }

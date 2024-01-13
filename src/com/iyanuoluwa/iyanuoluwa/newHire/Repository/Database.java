@@ -1,8 +1,8 @@
 package com.iyanuoluwa.iyanuoluwa.newHire.Repository;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import com.iyanuoluwa.iyanuoluwa.newHire.Models.newHire;
+
+import java.sql.*;
 
 public class Database {
     // I am using static because I want the variable to be associated with the class and not the instance of the class(object)
@@ -11,10 +11,21 @@ public class Database {
     static final private String user = "root";
     static final private String dbPassword = System.getenv("dbPassword");
 
-    static final private String createTable = "CREATE TABLE NEWHIRES(emp_id varchar(10) primary key,f_name varchar(20),l_name varchar(20),department varchar(20)," +
-                                        "company_email varchar(50),alternate_email varchar(50), password varchar(40)";
+    static final private String createTable = "CREATE TABLE NEW-HIRES_SZNBANK" +
+            "(emp_id varchar(10) primary key," +
+            "first_name varchar(20)" +
+            ",last_name varchar(20)," +
+            "department varchar(20)," +
+            "department_code int" +
+            ",company_email varchar(50)," +
+            "alternate_email varchar(50)";
+    static final private String createTablePrivate = "CREATE TABLE NEW-HIRES_SZNBANK_PRIVATE" +
+            "(emp_id varchar(10) primary key," +
+            "salt varchar(40)" +
+            ",password varchar(100));";
 
-    public Connection getConnection() throws SQLException{
+
+    public static Connection getConnectionOpen() throws SQLException{
         try{
             Connection connection = DriverManager.getConnection(url,user,dbPassword);
             return DriverManager.getConnection(url,user,dbPassword);
@@ -22,20 +33,47 @@ public class Database {
             e.printStackTrace();
             throw e;
         }
-
     }
 
-//    public void createTable(newHire newHire, newHireServices newHireServices) throws SQLException {
-//        PreparedStatement stmt = getConnection().prepareStatement(createTable);
-//        stmt.setInt(1,newHire.getId());
-//        stmt.setString(2,newHire.getFName());
-//        stmt.setString(3,newHire.getLName());
-//        stmt.setString(4,newHire.getDepartment());
-//        stmt.setString(5,newHire.getEmail());
-//        stmt.setString(6,newHireServices.getAlternateEmail());
-//        stmt.setString(7,newHire.getNewPassword());
+    public void createTable(newHire newHire) throws SQLException {
+        if (!validateTable(newHire)){
+            Statement stmt = getConnectionOpen().createStatement();
+            stmt.execute(createTable);
+        }else{
+            System.out.println("Table already exist in the DB");
+        }
+    }
 
-//    }
+    public void createTablePrivate(newHire newHire) throws  SQLException {
+        if(!validateTablePrivate(newHire)){
+            Statement stmt = getConnectionOpen().createStatement();
+            stmt.execute(createTablePrivate);
+        }else{
+            System.out.println("Table already exist in the DB");
+        }
+    }
+
+    private static boolean validateTable(newHire newHire)throws  SQLException{
+            String query = "SELECT NEW-HIRES_SZNBANK FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE_TABLE' AND TABLE_SCHEMA ='GIRAFFE'";
+            Statement statement = getConnectionOpen().createStatement();
+            ResultSet rs = statement.executeQuery(query);
+            rs.next();
+            Database.getConnectionClosed();
+            return rs.getInt(1)>0;
+    }
+
+    private static boolean validateTablePrivate(newHire newHire) throws SQLException{
+        String query = "SELECT NEW-HIRES_SZNBANK_PRIVATE FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE_TABLE' AND TABLE_SCHEMA ='GIRAFFE'";
+        Statement statement = getConnectionOpen().createStatement();
+        ResultSet rs = statement.executeQuery(query);
+        rs.next();
+        return rs.getInt(1)>0;
+    }
+
+    public static void getConnectionClosed() throws SQLException{
+        getConnectionOpen().close();
+    }
+
 
 
 

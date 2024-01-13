@@ -77,6 +77,8 @@ Steps to use Argon for password hashing
 2. Create a class of the implementation of the hashing (ArgonImpl)
 3. Create a result of the hash (ArgonResult)
 
+Instead of using scanner.nextLine, close the scanner once you are done with a chunk of the part of the application (look into this)
+
 
 
 

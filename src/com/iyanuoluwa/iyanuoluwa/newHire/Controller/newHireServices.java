@@ -1,12 +1,16 @@
 package com.iyanuoluwa.iyanuoluwa.newHire.Controller;
 
 
+import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class newHireServices {
-    private String defaultPassword;
+    private final String defaultPassword;
     private String alternateEmail;
+    public newHireServices(){
+        this.defaultPassword = newHireServices.setDefaultPassword();
+    }
 
     //this method validates the email address provided by user
     static boolean validEmail(String alternateEmail){
@@ -18,7 +22,7 @@ public class newHireServices {
         boolean condition;
         return condition = matcher.find();
     }
-    public void setDefaultPassword() {
+    private static String  setDefaultPassword() {
         String selectCharacters = "abcdefghijklmnopqrstuvwxyz" + "0123456789" + "ABCDEFGHIJKLMNOPQRSTUVWXYZ" + "@%#$*&!";
         //the capacity of the String Builder is the length of the password
         // if you want to make the capacity to be changeable you can allow it to be an argument in setPassword (not advisable though)
@@ -30,16 +34,24 @@ public class newHireServices {
             genPassword.append(selectCharacters.charAt(index));
         }
         //need to convert it to String, so it is not mutable by anyone
-        this.defaultPassword = genPassword.toString();
+         return genPassword.toString();
     }
 
     public String getDefaultPassword() {
         return this.defaultPassword;
     }
 
-    public void setAlternateEmail(String alternateEmail) {
-        if(newHireServices.validEmail(alternateEmail)){
-            this.alternateEmail = alternateEmail;
+    public void setAlternateEmail() {
+        while(true){
+            Scanner scanner = new Scanner(System.in);
+            String alternateEmail = scanner.nextLine();
+            if(newHireServices.validEmail(alternateEmail)){
+                this.alternateEmail = alternateEmail;
+                System.out.println("Alternate email has been set");
+                break;
+            }else{
+                System.out.println("Email format not correct. Please try Again!!!!");
+            }
         }
     }
 

@@ -30,14 +30,15 @@ public class Main {
             }
         }
         if (choice == 1) {
-            String firstName;
-            String lastName;
-            String department;
+            //properties of newHire
+            String firstName,lastName,department,email,defaultPassword;
+            int departmentCode,id;
+
             System.out.println("What is your first name");
             scanner.nextLine();
-            firstName = scanner.nextLine();
+            firstName = scanner.nextLine().trim();
             System.out.println("What is your last name");
-            lastName = scanner.nextLine();
+            lastName = scanner.nextLine().trim();
             while (true) {
                 try {
                     System.out.println("Select one of the options for your department");
@@ -64,7 +65,72 @@ public class Main {
                 }
             }
             newHire newHire = new newHire(firstName,lastName,department);
+            newHire.setDepartmentCode();
+            departmentCode = newHire.getDepartmentCode();
+            newHire.setId();
+            id = newHire.getId();
+            System.out.println(id);
+            newHire.setEmail();
+            email = newHire.getEmail();
+
             newHireServices newHireServices = new newHireServices();
+            defaultPassword = newHireServices.getDefaultPassword();
+            System.out.printf("Your default password is: %s\n",defaultPassword);
+            System.out.printf("Your company email(username) is: %s\n",email);
+            System.out.printf("Your department code is: %d\n\n",departmentCode);
+
+
+            //Resetting your new password;
+            //tell user to provide email address and validate
+            //tell user to provide default password and verify
+            //then you can call the set password function
+            System.out.printf("%s you will need to reset your password\n", firstName);
+            scanner.nextLine();
+            while(true){
+                System.out.println("Provide your username(email)");
+                String email2 = scanner.nextLine().trim();
+                System.out.println("Provide your password");
+                String defaultPassword2 = scanner.nextLine().trim();
+
+                //verification
+                if(email.equals(email2) && defaultPassword2.equals(defaultPassword)){
+                    newHire newHire1 = new newHire(email);
+                    break;
+                }else if(!email.equals(email2) && defaultPassword2.equals(defaultPassword)){
+                    System.out.println("Username not correct");
+                }else {
+                    System.out.println("Password is not correct");
+                }
+            }
+            int eChoice;
+            while(true){
+                try{
+                    System.out.println("Would you like to set an alternate Password??");
+                    System.out.println("1. YES");
+                    System.out.println("2. NO");
+                    eChoice = scanner.nextInt();
+                    if(eChoice < 1 || eChoice > 2){
+                        throw  new IllegalArgumentException();
+                    }
+                    else{
+                        break;
+                    }
+                }catch(Exception e){
+                    System.out.println("Wrong option selected");
+                    scanner.nextLine();
+                }
+            }
+            switch (eChoice){
+                case (1):
+                    System.out.println("Provide your alternate email address");
+                    newHireServices.setAlternateEmail();
+                    break;
+                case (2):
+                    System.out.println("No problem");
+                    break;
+            }
+
+
         }
 
    }
