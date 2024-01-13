@@ -46,12 +46,13 @@ You can create a system that allows to register multiple users on one instance o
 create the app to be able to respond to users input intuitively, they should be able to cancel continuing the result at any point in time
 and close the app as a result, as of now it is still not
 
+PROJECT OVERVIEW
 Revamping the whole application  (My first major portfolio) ( will incorporate all things, front-end, back-end, will upload to the cloud using aws)
 Features
 1. Registration of new hires
 2. Send welcome emails to new hires
 3. HR can use it to query information about the company staff (you must give a level of authority to  the users to access this)
-4. Be able to create a username and password to log into the web-app
+4. Be able to create a username and password to log into the web-app (username is company email)
 
 
 Information about user
@@ -65,6 +66,16 @@ Information about user
 7. Employer address and name
 8. Phone number and email address
 
+Do not store sensitive information like password inside the same table as the general new hires table
+Research on how to store the data in mySQL DB and make it more safe---- Not accessible by just anyone
+                                                                   ----- Maybe ask security questions or password itself before password is released
+
+I do not want to be able just set and get passwords,maybe make it private and maybe create a constructor that calls the function and then you can set it from there
+
+Steps to use Argon for password hashing
+1. Create an option for the parameters to be used (ArgonOption)
+2. Create a class of the implementation of the hashing (ArgonImpl)
+3. Create a result of the hash (ArgonResult)
 
 
 
