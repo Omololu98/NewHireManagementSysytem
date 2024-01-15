@@ -3,6 +3,7 @@ package com.iyanuoluwa.iyanuoluwa;
 import com.iyanuoluwa.iyanuoluwa.newHire.Controller.newHireServices;
 import com.iyanuoluwa.iyanuoluwa.newHire.Models.newHire;
 
+import java.sql.Date;
 import java.util.Scanner;
 
 public class Main {
@@ -64,13 +65,19 @@ public class Main {
                     scanner.nextLine();
                 }
             }
+            scanner.nextLine(); //consumes the newline character
             newHire newHire = new newHire(firstName,lastName,department);
             newHire.setDepartmentCode();
             departmentCode = newHire.getDepartmentCode();
             newHire.setId();
-            id = newHire.getId();
-            System.out.println(id);
             newHire.setEmail();
+            // Registering employment Date for new hires.
+            System.out.println("When was your employment date (yyyy-mm-dd)?");
+            String date = scanner.nextLine();
+            Date empDate =  Date.valueOf(date);
+            newHire.setEmpDate(empDate);
+
+
             email = newHire.getEmail();
 
             newHireServices newHireServices = new newHireServices();
@@ -85,11 +92,10 @@ public class Main {
             //tell user to provide default password and verify
             //then you can call the set password function
             System.out.printf("%s you will need to reset your password\n", firstName);
-            scanner.nextLine();
             while(true){
                 System.out.println("Provide your username(email)");
                 String email2 = scanner.nextLine().trim();
-                System.out.println("Provide your password");
+                System.out.println("Provide your password(default password)");
                 String defaultPassword2 = scanner.nextLine().trim();
 
                 //verification
@@ -105,7 +111,7 @@ public class Main {
             int eChoice;
             while(true){
                 try{
-                    System.out.println("Would you like to set an alternate Password??");
+                    System.out.println("Would you like to set an alternate email address??");
                     System.out.println("1. YES");
                     System.out.println("2. NO");
                     eChoice = scanner.nextInt();

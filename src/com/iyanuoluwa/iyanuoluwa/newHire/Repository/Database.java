@@ -17,7 +17,7 @@ public class Database {
             ",last_name varchar(20)," +
             "department varchar(20)," +
             "department_code int" +
-            ",company_email varchar(50)," +
+            ",emp_Date Date, company_email varchar(50)," +
             "alternate_email varchar(50)";
     static final private String createTablePrivate = "CREATE TABLE NEW-HIRES_SZNBANK_PRIVATE" +
             "(emp_id varchar(10) primary key," +

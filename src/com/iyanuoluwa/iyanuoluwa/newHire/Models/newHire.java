@@ -5,6 +5,7 @@ import com.quorum.tessera.argon2.ArgonOptions;
 import com.quorum.tessera.argon2.ArgonResult;
 
 import java.security.SecureRandom;
+import java.sql.Date;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -24,6 +25,7 @@ public class newHire {
     final public int companyCode = 34;
     private int departmentCode;
     private byte[] password;
+    private Date empDate;
 
     private byte[] salt; // salt of every user (for their password)
 
@@ -55,6 +57,12 @@ public class newHire {
         String s1 = s.toString();
         this.id = Integer.parseInt(s1);
     }
+    public void setEmpDate(Date date){
+        this.empDate = date;
+    }
+    public Date getEmpDate(){
+        return this.empDate;
+    }
 
     public int getId() {
         return this.id;
@@ -68,9 +76,14 @@ public class newHire {
         return this.lName;
     }
 
+    public void setDepartment(String department){
+        this.department = department;
+    }
+
     public String getDepartment() {
         return this.department;
     }
+
 
     public void setDepartmentCode(){
         if(this.department.equalsIgnoreCase("sales")){

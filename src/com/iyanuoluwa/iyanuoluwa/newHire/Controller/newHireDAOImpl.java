@@ -14,15 +14,16 @@ public class newHireDAOImpl implements newHireDAO {
     public void createInfoNewHire(newHire newHire, newHireServices newHireServices) {
         try {
 
-            String query = "Insert into NEW-HIRES_SZNBANK values(?,?,?,?,?,?,?);";
+            String query = "Insert into NEW-HIRES_SZNBANK values(?,?,?,?,?,?,?,?);";
             PreparedStatement pstmt = Database.getConnectionOpen().prepareStatement(query);
             pstmt.setInt(1,newHire.getId());
             pstmt.setString(2,newHire.getFName());
             pstmt.setString(3,newHire.getLName());
             pstmt.setString(4,newHire.getDepartment());
             pstmt.setInt(5,newHire.getDepartmentCode());
-            pstmt.setString(6,newHire.getEmail());
-            pstmt.setString(7,newHireServices.getAlternateEmail());
+            pstmt.setDate(6,newHire.getEmpDate());
+            pstmt.setString(7,newHire.getEmail());
+            pstmt.setString(8,newHireServices.getAlternateEmail());
             pstmt.execute();
             Database.getConnectionClosed();
         } catch (SQLException e) {
@@ -42,6 +43,9 @@ public class newHireDAOImpl implements newHireDAO {
                 String query2 = "update NEW-HIRES_SZNBANK_PRIVATE set "+option+" = ? where emp_id =?;";
                 if (option.equals("department")){
                     PreparedStatement pmt = Database.getConnectionOpen().prepareStatement(query);
+                    System.out.println("Provide the new department?");
+                    String department = scanner.nextLine().trim();
+                    newHire.setDepartment(department);
                     pmt.setString(1,newHire.getDepartment());
                     pmt.setInt(2,id);
                     pmt.executeUpdate();
@@ -49,6 +53,8 @@ public class newHireDAOImpl implements newHireDAO {
                 }
                 else if(option.equals("alternate_email")){
                     PreparedStatement pmt = Database.getConnectionOpen().prepareStatement(query);
+                    System.out.println("Provide the new alternate email?");
+                    newHireServices.setAlternateEmail();
                     pmt.setString(1, newHireServices.getAlternateEmail());
                     pmt.setInt(2,id);
                     pmt.executeUpdate();
@@ -56,10 +62,15 @@ public class newHireDAOImpl implements newHireDAO {
                 }
                 else{
                     PreparedStatement pmt1 = Database.getConnectionOpen().prepareStatement(query);
-                    pmt1.setBytes(1, newHire.getPassword());
+                    System.out.println("Provide your username(company email)");
+                    String email = scanner.nextLine().trim();
+                    newHire newHire1 = new newHire(email);
+                    pmt1.setBytes(1, newHire1.getPassword());
                     pmt1.setInt(2,id);
                 }
 
+            }catch (SQLException e){
+                System.out.println("Error in recording info for new hire");
             }
 
     }
