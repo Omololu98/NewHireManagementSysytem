@@ -101,6 +101,7 @@ public class Main {
                 //verification
                 if(email.equals(email2) && defaultPassword2.equals(defaultPassword)){
                     newHire newHire1 = new newHire(email);
+                    System.out.println(newHire1.getPassword());
                     break;
                 }else if(!email.equals(email2) && defaultPassword2.equals(defaultPassword)){
                     System.out.println("Username not correct");
@@ -108,6 +109,8 @@ public class Main {
                     System.out.println("Password is not correct");
                 }
             }
+
+
             int eChoice;
             while(true){
                 try{

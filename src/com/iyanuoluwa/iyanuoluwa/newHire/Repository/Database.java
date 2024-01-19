@@ -21,7 +21,7 @@ public class Database {
             "alternate_email varchar(50)";
     static final private String createTablePrivate = "CREATE TABLE NEW-HIRES_SZNBANK_PRIVATE" +
             "(emp_id varchar(10) primary key," +
-            "salt varchar(40)" +
+            "company_email varchar(50), salt varchar(40)" +
             ",password varchar(100));";
 
 

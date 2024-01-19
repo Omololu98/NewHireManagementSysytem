@@ -79,6 +79,10 @@ Steps to use Argon for password hashing
 
 Instead of using scanner.nextLine, close the scanner once you are done with a chunk of the part of the application (look into this)
 
+If the user wants to update his documents, program him that he needs to input his new password into the system and check for the validation of the password
+using argon before he is accepted into the system
+
+
 
 
 

@@ -24,10 +24,10 @@ public class newHire {
     final public String companyName = "sznBank";
     final public int companyCode = 34;
     private int departmentCode;
-    private byte[] password;
+    private String password;
     private Date empDate;
 
-    private byte[] salt; // salt of every user (for their password)
+    private String salt; // salt of every user (for their password)
 
     //endregion
 
@@ -38,12 +38,13 @@ public class newHire {
         this.fName = firstName;
         this.lName = lastName;
         this.department =department;
+
     }
 
     //this constructor will be used to set a new password once you get your default password
     public newHire(String email){
-        this.salt = newHire.generateSalt();
-        this.password= newHire.setNewPassWord();
+        this.salt = newHire.byteToHexadecimalString(newHire.generateSalt());
+        this.password= newHire.byteToHexadecimalString(newHire.setNewPassWord());
     }
     public void setId(){
         StringBuilder s = new StringBuilder(6); // capacity is maximum number of characters in ID
@@ -135,8 +136,11 @@ public class newHire {
             }
         }
     }
-    public byte[] getPassword(){
+    public String getPassword(){
         return this.password;
+    }
+    public String  getSalt(){
+        return this.salt;
     }
 
         //endregion
@@ -171,7 +175,7 @@ public class newHire {
 
     // Hashing and Salting of Passwords
     private static  byte[] generateSalt(){
-        byte[] mySalt = new byte[32];
+        byte[] mySalt = new byte[16];
         SecureRandom ranSec = new SecureRandom();
         ranSec.nextBytes(mySalt);
         return mySalt;
@@ -183,6 +187,19 @@ public class newHire {
         Argon2Impl hash = new Argon2Impl();
         return hash.hash(myOptions,password,newHire.generateSalt());// this is not resolved it wil not return the value of salt and hash (note this)
     }
+
+    private static String byteToHexadecimalString(byte[] hash){
+        StringBuilder sb = new StringBuilder();
+            for(int i =0; i< hash.length; i++){
+            // convert each of the values of the array into a byte
+            byte b = hash[i];
+            sb.append(String.format("%02X",b));
+        }
+        return sb.toString();
+    }
+
+
+
     //endregion
 
     //endregion
