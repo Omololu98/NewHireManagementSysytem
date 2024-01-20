@@ -11,17 +11,17 @@ public class Database {
     static final private String user = "root";
     static final private String dbPassword = System.getenv("dbPassword");
 
-    static final private String createTable = "CREATE TABLE NEW-HIRES_SZNBANK" +
-            "(emp_id varchar(10) primary key," +
+    static final private String createTable = "CREATE TABLE NEW_HIRES_SZNBANK" +
+            "(emp_id int primary key," +
             "first_name varchar(20)" +
             ",last_name varchar(20)," +
             "department varchar(20)," +
             "department_code int" +
-            ",emp_Date Date, company_email varchar(50)," +
-            "alternate_email varchar(50)";
-    static final private String createTablePrivate = "CREATE TABLE NEW-HIRES_SZNBANK_PRIVATE" +
-            "(emp_id varchar(10) primary key," +
-            "company_email varchar(50), salt varchar(40)" +
+            ",emp_date date, company_email varchar(50)," +
+            "alternate_email varchar(50))";
+    static final private String createTablePrivate = "CREATE TABLE NEW_HIRES_SZNBANK_PRIVATE" +
+            "(emp_id int primary key," +
+            "company_email varchar(50), salt varchar(100)" +
             ",password varchar(100));";
 
 
@@ -39,8 +39,6 @@ public class Database {
         if (!validateTable(newHire)){
             Statement stmt = getConnectionOpen().createStatement();
             stmt.execute(createTable);
-        }else{
-            System.out.println("Table already exist in the DB");
         }
     }
 
@@ -48,22 +46,19 @@ public class Database {
         if(!validateTablePrivate(newHire)){
             Statement stmt = getConnectionOpen().createStatement();
             stmt.execute(createTablePrivate);
-        }else{
-            System.out.println("Table already exist in the DB");
         }
     }
 
     private static boolean validateTable(newHire newHire)throws  SQLException{
-            String query = "SELECT NEW-HIRES_SZNBANK FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE_TABLE' AND TABLE_SCHEMA ='GIRAFFE'";
+            String query = "SELECT count(*) FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'NEW_HIRES_SZNBANK' AND TABLE_SCHEMA ='GIRAFFE'";
             Statement statement = getConnectionOpen().createStatement();
             ResultSet rs = statement.executeQuery(query);
             rs.next();
-            Database.getConnectionClosed();
             return rs.getInt(1)>0;
     }
 
     private static boolean validateTablePrivate(newHire newHire) throws SQLException{
-        String query = "SELECT NEW-HIRES_SZNBANK_PRIVATE FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_TYPE = 'BASE_TABLE' AND TABLE_SCHEMA ='GIRAFFE'";
+        String query = "SELECT count(*)  FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = 'NEW_HIRES_SZNBANK_PRIVATE' AND TABLE_SCHEMA ='GIRAFFE'";
         Statement statement = getConnectionOpen().createStatement();
         ResultSet rs = statement.executeQuery(query);
         rs.next();

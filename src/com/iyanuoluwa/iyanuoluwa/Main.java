@@ -1,9 +1,12 @@
 package com.iyanuoluwa.iyanuoluwa;
 
+import com.iyanuoluwa.iyanuoluwa.newHire.Controller.newHireDAOImpl;
 import com.iyanuoluwa.iyanuoluwa.newHire.Controller.newHireServices;
 import com.iyanuoluwa.iyanuoluwa.newHire.Models.newHire;
+import com.iyanuoluwa.iyanuoluwa.newHire.Repository.Database;
 
 import java.sql.Date;
+import java.sql.SQLException;
 import java.util.Scanner;
 
 public class Main {
@@ -30,6 +33,7 @@ public class Main {
                 scanner.nextLine();
             }
         }
+        // NEW EMPLOYER OPTIONS
         if (choice == 1) {
             //properties of newHire
             String firstName,lastName,department,email,defaultPassword;
@@ -66,17 +70,18 @@ public class Main {
                 }
             }
             scanner.nextLine(); //consumes the newline character
-            newHire newHire = new newHire(firstName,lastName,department);
+            newHire newHire;
+            newHire = new newHire(firstName,lastName,department);
             newHire.setDepartmentCode();
             departmentCode = newHire.getDepartmentCode();
             newHire.setId();
             newHire.setEmail();
+            newHire.setFullName();
             // Registering employment Date for new hires.
             System.out.println("When was your employment date (yyyy-mm-dd)?");
             String date = scanner.nextLine();
             Date empDate =  Date.valueOf(date);
             newHire.setEmpDate(empDate);
-
 
             email = newHire.getEmail();
 
@@ -92,6 +97,7 @@ public class Main {
             //tell user to provide default password and verify
             //then you can call the set password function
             System.out.printf("%s you will need to reset your password\n", firstName);
+            newHire newHire1;
             while(true){
                 System.out.println("Provide your username(email)");
                 String email2 = scanner.nextLine().trim();
@@ -100,8 +106,7 @@ public class Main {
 
                 //verification
                 if(email.equals(email2) && defaultPassword2.equals(defaultPassword)){
-                    newHire newHire1 = new newHire(email);
-                    System.out.println(newHire1.getPassword());
+                    newHire1 = new newHire(email);
                     break;
                 }else if(!email.equals(email2) && defaultPassword2.equals(defaultPassword)){
                     System.out.println("Username not correct");
@@ -109,7 +114,6 @@ public class Main {
                     System.out.println("Password is not correct");
                 }
             }
-
 
             int eChoice;
             while(true){
@@ -133,15 +137,73 @@ public class Main {
                 case (1):
                     System.out.println("Provide your alternate email address");
                     newHireServices.setAlternateEmail();
+                    System.out.println(newHireServices.getAlternateEmail());
                     break;
                 case (2):
                     System.out.println("No problem");
                     break;
             }
+            Database database = new Database();
+            newHireDAOImpl saveEmployee = new newHireDAOImpl();
+            try {
+                database.createTable(newHire);
+                database.createTablePrivate(newHire);
+                saveEmployee.createInfoNewHire(newHire,newHire1,newHireServices);
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
 
+            System.out.printf("%s you are welcome to SZNBANK, we wish you successful career with us\n", newHire.getFullName());
 
         }
+        //OLD HIRE STAGE
+        else{
+            System.out.println("Log into your account");
+            newHireDAOImpl newHireDAO = new newHireDAOImpl();
+            int updateOption = 0;
 
+            while(true){
+
+                try {
+                    if (!newHireDAO.loginMethod()) {
+                        System.out.println("Wrong password!!!");
+                    } else {
+                        try {
+                            System.out.println("1. UPDATE MY DETAILS");
+                            System.out.println("2. VIEW MY DETAILS");
+                            System.out.println("3. DELETE MY DETAILS");
+                            updateOption = scanner.nextInt();
+                            if (updateOption < 1 || updateOption > 3) {
+                                throw new IllegalArgumentException();
+                            }
+                        } catch (Exception e) {
+                            System.out.println("Wrong option");
+
+                        }
+                        break;
+
+                    }
+
+                    newHire newHire = null;
+                    newHireServices newHireServices = null;
+                    switch (updateOption) {
+                        case 1:
+                            newHireDAO.updateInfoNewHire(newHire, newHireServices);
+                        case 2:
+                            newHireDAO.getInfoNewHire(newHire, newHireServices);
+                        case 3:
+                            newHireDAO.deleteInfoNewHire(newHire, newHireServices);
+                    }
+
+
+                }catch(Exception e){
+                    System.out.println("Error Occurred with Database");
+                    e.printStackTrace();
+                }
+
+            }
+
+        }
    }
 }
 

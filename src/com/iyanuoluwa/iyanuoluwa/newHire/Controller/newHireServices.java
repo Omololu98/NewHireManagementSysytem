@@ -53,6 +53,7 @@ public class newHireServices {
                 System.out.println("Email format not correct. Please try Again!!!!");
             }
         }
+
     }
 
     public String getAlternateEmail() {

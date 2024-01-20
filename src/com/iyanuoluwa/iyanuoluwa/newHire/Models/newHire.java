@@ -6,6 +6,7 @@ import com.quorum.tessera.argon2.ArgonResult;
 
 import java.security.SecureRandom;
 import java.sql.Date;
+import java.util.Arrays;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -16,11 +17,11 @@ public class newHire {
     //region Properties
     private int id; // these variables are known as instance variables because they are peculiar to the class itself (var) keyword cannot be used
     private String fName;
-    final public String mailCapacity = "50GB";  // to check the mail capacity of the user
+//    final public String mailCapacity = "50GB";  // to check the mail capacity of the user
     private String lName;
     private String email;
     private String department;
-    final public String fullName = lName + " " + fName;
+    private String  fullName;
     final public String companyName = "sznBank";
     final public int companyCode = 34;
     private int departmentCode;
@@ -47,7 +48,7 @@ public class newHire {
         this.password= newHire.byteToHexadecimalString(newHire.setNewPassWord());
     }
     public void setId(){
-        StringBuilder s = new StringBuilder(6); // capacity is maximum number of characters in ID
+        StringBuilder s = new StringBuilder(6); // capacity is the maximum number of characters in the ID
         // to generate the last two digits peculiar to the newHire
         SecureRandom random = new SecureRandom();
         int randomID =random.nextInt(99) +1;
@@ -57,6 +58,12 @@ public class newHire {
         s.append(randomId);
         String s1 = s.toString();
         this.id = Integer.parseInt(s1);
+    }
+    public void setFullName(){
+        this.fullName = this.lName + " " + this.fName;
+    }
+    public String getFullName(){
+        return this.fullName;
     }
     public void setEmpDate(Date date){
         this.empDate = date;
@@ -178,14 +185,16 @@ public class newHire {
         byte[] mySalt = new byte[16];
         SecureRandom ranSec = new SecureRandom();
         ranSec.nextBytes(mySalt);
+        System.out.println(Arrays.toString(mySalt));
         return mySalt;
+
     }
     private static  ArgonResult  encyptedPassword(String password){
         // create the options of the Algorithm
         ArgonOptions myOptions = new ArgonOptions("id",5,100000,2);
         // create Implementation of the algorithm for the hashing process
         Argon2Impl hash = new Argon2Impl();
-        return hash.hash(myOptions,password,newHire.generateSalt());// this is not resolved it wil not return the value of salt and hash (note this)
+        return hash.hash(password,newHire.generateSalt());// this is not resolved it wil not return the value of salt and hash (note this)
     }
 
     private static String byteToHexadecimalString(byte[] hash){
