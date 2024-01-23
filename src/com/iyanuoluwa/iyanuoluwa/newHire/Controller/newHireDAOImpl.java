@@ -35,8 +35,8 @@ public class newHireDAOImpl implements newHireDAO {
             // the second table to be created
             pstmt1.setInt(1,newHire.getId());
             pstmt1.setString(2,newHire.getEmail());
-            pstmt1.setString(3,newHire1.getSalt());
-            pstmt1.setString(4,newHire1.getPassword());
+            pstmt1.setString(3,newHire.getSaltDb());
+            pstmt1.setString(4,newHire.getPassword());
 
             pstmt.execute();
             pstmt1.execute();
@@ -80,9 +80,10 @@ public class newHireDAOImpl implements newHireDAO {
                 else{
                     System.out.println("Provide your username(company email)?");
                     String email = scanner.nextLine().trim();
-                    newHire = new newHire(email);
+                    newHire.setSalt();
+                    newHire.setNewPassWord();
                     PreparedStatement pmt = Database.getConnectionOpen().prepareStatement(query2);
-                    pmt.setString(1, newHire.getSalt());
+                    pmt.setString(1, newHire.getSaltDb());
                     pmt.setString(2,newHire.getPassword());
                     pmt.setInt(3,id);
                     pmt.executeUpdate();
@@ -107,16 +108,17 @@ public class newHireDAOImpl implements newHireDAO {
         ResultSet rs = pmt.getResultSet();
         ResultSetMetaData rsMeta = pmt.getMetaData();
         int columnNumbers = rsMeta.getColumnCount();
-        for(int i =0;i<columnNumbers;i++){
+        for(int i =1;i<=columnNumbers;i++){
             String columnName = rsMeta.getColumnName(i);
             System.out.printf("%-20s", columnName);
         }
         System.out.println();
         if(rs.next()){
-            for(int i=0;i< columnNumbers;i++){
+            for(int i=1;i<= columnNumbers;i++){
                 Object columnDetails = rs.getObject(i);
                 System.out.printf("%-20s",columnDetails);
             }
+            System.out.println();
         }
         Database.getConnectionClosed();
     }
@@ -166,12 +168,8 @@ public class newHireDAOImpl implements newHireDAO {
         System.out.println("Provide your password");
         String inputPassword = scanner.nextLine();
         ArrayList<String> details = newHireDAOImpl.getLoginDetails(ID);
-
         byte[] saltByte = newHireDAOImpl.hexadecimalToByteArray(details.getLast());
-        System.out.println(Arrays.toString(saltByte));
         byte[] passwordByte = newHireDAOImpl.hexadecimalToByteArray(details.get(1));
-        System.out.println(Arrays.toString(passwordByte));
-
         ArgonResult hashResult = newHireDAOImpl.encryptedPassword(inputPassword,saltByte);
         byte[] inputPasswordHash = hashResult.getHash();
 
@@ -225,6 +223,7 @@ public class newHireDAOImpl implements newHireDAO {
                 sensitiveData.add(rss.getString(1));
                 sensitiveData.add(rss.getString(2));
                 sensitiveData.add(rss.getString(3));
+
             }
 
         }catch (SQLException e){
@@ -255,7 +254,7 @@ public class newHireDAOImpl implements newHireDAO {
         ArgonOptions myOptions = new ArgonOptions("id",5,100000,2);
         // create Implementation of the algorithm for the hashing process
         Argon2Impl hash = new Argon2Impl();
-        return hash.hash(password,salt);// this is not resolved it wil not return the value of salt and hash (note this)
+        return hash.hash(myOptions, password,salt);// this is not resolved it wil not return the value of salt and hash (note this)
     }
     //endregion
 

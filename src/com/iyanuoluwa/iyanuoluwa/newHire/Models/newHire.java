@@ -26,9 +26,11 @@ public class newHire {
     final public int companyCode = 34;
     private int departmentCode;
     private String password;
+
     private Date empDate;
 
-    private String salt; // salt of every user (for their password)
+    private byte[] salt; // salt of every user (for their password)
+    private String saltDb;
 
     //endregion
 
@@ -43,10 +45,12 @@ public class newHire {
     }
 
     //this constructor will be used to set a new password once you get your default password
-    public newHire(String email){
-        this.salt = newHire.byteToHexadecimalString(newHire.generateSalt());
-        this.password= newHire.byteToHexadecimalString(newHire.setNewPassWord());
-    }
+//    public newHire(String email){
+//        this.salt = newHire.byteToHexadecimalString(newHire.setNewPassWord().getLast());
+//
+//        this.password= newHire.byteToHexadecimalString(newHire.setNewPassWord().getFirst());
+//    }
+
     public void setId(){
         StringBuilder s = new StringBuilder(6); // capacity is the maximum number of characters in the ID
         // to generate the last two digits peculiar to the newHire
@@ -119,35 +123,51 @@ public class newHire {
         return this.email;
     }
 
-    private static byte[] setNewPassWord() {
-        while(true) {
+    public void setSalt(){
+        this.salt = newHire.generateSalt();
+    }
+
+    public void setNewPassWord() {
             Scanner scanner = new Scanner(System.in);
             System.out.println("Password must be minimum of 12 characters including " +
                     "Uppercase,lowercase, numbers and either of %@#$*&!\n");
-            System.out.println("Input your new Password");
-            String newPassword = scanner.nextLine().trim();
-            System.out.println("Re-enter your Password"); // to re-enter the password provided
-            String newPassword1 = scanner.nextLine().trim(); //trim allows the app to ignore white-spaces before and after the inputed word in scanner
-            //this rectifies if the password provided matches, authentication of password twice is needed.
-            if (newPassword.equals(newPassword1)) {
+            while(true){
+                System.out.println("Input your new Password");
+                String newPassword = scanner.nextLine().trim();
+                System.out.println("Re-enter your Password"); // to re-enter the password provided
+                String newPassword1 = scanner.nextLine().trim(); //trim allows the app to ignore white-spaces before and after the inputed word in scanner
+                //this rectifies if the password provided matches, authentication of password twice is needed.
+                if (newPassword.equals(newPassword1)) {
 
-                if (newHire.verifyPassword(newPassword)) {
-                    ArgonResult argonResult =newHire.encyptedPassword(newPassword);
-                    System.out.println("Password has been successfully changed");
-                    return argonResult.getHash();
-                }else{
-                    System.out.println("Password conditions not met");
+                    if (newHire.verifyPassword(newPassword)) {
+                        ArgonResult argonResult =newHire.encyptedPassword(newPassword,this.salt);
+                        System.out.println("Password has been successfully changed");
+                        byte[] hash = argonResult.getHash();
+                        this.password = newHire.byteToHexadecimalString(hash);
+                        break;
+                    }
+                    else{
+                        System.out.println("Password conditions not met");
+                    }
                 }
-            }else{
-                System.out.println("Password does not match");
+                else{
+                    System.out.println("Password does not match");
+                }
             }
         }
-    }
+
     public String getPassword(){
         return this.password;
     }
-    public String  getSalt(){
+    public byte[] getSalt(){
         return this.salt;
+    }
+
+    public void setSaltDb(){
+        this.saltDb = newHire.byteToHexadecimalString(this.salt);
+    }
+    public String getSaltDb(){
+        return this.saltDb;
     }
 
         //endregion
@@ -189,12 +209,13 @@ public class newHire {
         return mySalt;
 
     }
-    private static  ArgonResult  encyptedPassword(String password){
+    private static  ArgonResult  encyptedPassword(String password, byte[] salt) {
         // create the options of the Algorithm
-        ArgonOptions myOptions = new ArgonOptions("id",5,100000,2);
+        ArgonOptions myOptions = new ArgonOptions("id", 5, 100000, 2);
         // create Implementation of the algorithm for the hashing process
         Argon2Impl hash = new Argon2Impl();
-        return hash.hash(password,newHire.generateSalt());// this is not resolved it wil not return the value of salt and hash (note this)
+       return  hash.hash(myOptions, password,salt);// this is not resolved it wil not return the value of salt and hash (note this)
+
     }
 
     private static String byteToHexadecimalString(byte[] hash){

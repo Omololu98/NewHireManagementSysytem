@@ -87,6 +87,8 @@ public class Main {
 
             newHireServices newHireServices = new newHireServices();
             defaultPassword = newHireServices.getDefaultPassword();
+
+            System.out.printf("Your employee ID is:%d\n", newHire.getId());
             System.out.printf("Your default password is: %s\n",defaultPassword);
             System.out.printf("Your company email(username) is: %s\n",email);
             System.out.printf("Your department code is: %d\n\n",departmentCode);
@@ -97,24 +99,31 @@ public class Main {
             //tell user to provide default password and verify
             //then you can call the set password function
             System.out.printf("%s you will need to reset your password\n", firstName);
-            newHire newHire1;
-            while(true){
+
+            while(true) {
                 System.out.println("Provide your username(email)");
                 String email2 = scanner.nextLine().trim();
                 System.out.println("Provide your password(default password)");
                 String defaultPassword2 = scanner.nextLine().trim();
 
                 //verification
-                if(email.equals(email2) && defaultPassword2.equals(defaultPassword)){
-                    newHire1 = new newHire(email);
+                if (email.equals(email2) && defaultPassword2.equals(defaultPassword)) {
+                    newHire.setSalt();
+                    newHire.setSaltDb();
+                    newHire.setNewPassWord();
                     break;
-                }else if(!email.equals(email2) && defaultPassword2.equals(defaultPassword)){
+
+                } else if (!email.equals(email2) && defaultPassword2.equals(defaultPassword)) {
                     System.out.println("Username not correct");
-                }else {
+                } else {
                     System.out.println("Password is not correct");
                 }
+                /* NOTES:The loop has variables that compares inputs(user input),this means that we must equate the variables
+                 (update variables) so the loop does
+                not continue to reference the original values.*/
+                email2 = email;
+                defaultPassword2 = defaultPassword;
             }
-
             int eChoice;
             while(true){
                 try{
@@ -148,7 +157,7 @@ public class Main {
             try {
                 database.createTable(newHire);
                 database.createTablePrivate(newHire);
-                saveEmployee.createInfoNewHire(newHire,newHire1,newHireServices);
+                saveEmployee.createInfoNewHire(newHire,newHire,newHireServices);
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
@@ -156,15 +165,15 @@ public class Main {
             System.out.printf("%s you are welcome to SZNBANK, we wish you successful career with us\n", newHire.getFullName());
 
         }
-        //OLD HIRE STAGE
+//        OLD HIRE STAGE
         else{
-            System.out.println("Log into your account");
-            newHireDAOImpl newHireDAO = new newHireDAOImpl();
-            int updateOption = 0;
-
-            while(true){
-
-                try {
+        System.out.println("Log into your account");
+        newHireDAOImpl newHireDAO = new newHireDAOImpl();
+        newHire newHire = null;
+        newHireServices newHireServices = null;
+        int updateOption = -1;
+            try {
+                while(true){
                     if (!newHireDAO.loginMethod()) {
                         System.out.println("Wrong password!!!");
                     } else {
@@ -183,24 +192,22 @@ public class Main {
                         break;
 
                     }
-
-                    newHire newHire = null;
-                    newHireServices newHireServices = null;
-                    switch (updateOption) {
-                        case 1:
-                            newHireDAO.updateInfoNewHire(newHire, newHireServices);
-                        case 2:
-                            newHireDAO.getInfoNewHire(newHire, newHireServices);
-                        case 3:
-                            newHireDAO.deleteInfoNewHire(newHire, newHireServices);
-                    }
-
-
-                }catch(Exception e){
-                    System.out.println("Error Occurred with Database");
-                    e.printStackTrace();
                 }
-
+                switch (updateOption) {
+                    case (1):
+                        newHireDAO.updateInfoNewHire(newHire, newHireServices);
+                        break;
+                    case 2:
+                        newHireDAO.getInfoNewHire(newHire, newHireServices);
+                        break;
+                    case 3:
+                        newHireDAO.deleteInfoNewHire(newHire, newHireServices);
+                        break;
+                }
+            }
+            catch(Exception e){
+                System.out.println("Error Occurred with Database");
+                e.printStackTrace();
             }
 
         }
